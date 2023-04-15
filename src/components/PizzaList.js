@@ -1,12 +1,12 @@
 import React from "react";
 import Pizza from "./Pizza";
 
-function PizzaList({pizzaList}) {
+function PizzaList({pizzaList, onSelectPizza}) {
 
 const displayPizzas = pizzaList.map(pizza => {
   return (
-    <Pizza key ={pizza.id}
-    {...pizza} />
+    <Pizza key ={pizza.id} onSelectPizza={onSelectPizza}
+    pizza={pizza} />
   )
 })
 

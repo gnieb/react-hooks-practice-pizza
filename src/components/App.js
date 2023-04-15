@@ -5,23 +5,35 @@ import PizzaList from "./PizzaList";
 
 function App() {
   const [pizzaList, setPizzaList] = useState([])
+  const [selectedPizza, setSelectedPizza] = useState('')
 
   useEffect(() => {
-    fetch("http://localhost:3001/pizzas")
+    fetch("http://localhost:3002/pizzas")
     .then(r=> r.json())
     .then(pizzas => setPizzaList(pizzas))
   }, ([]))
 
-  function handleAddPizza (newPizza) {
-    setPizzaList([...pizzaList, newPizza])
+  function handleChangeForm(name, value) {
+    setSelectedPizza({
+      ...selectedPizza,
+      [name]: value,
+    });
   }
+    function handleEditPizza (upizzaObj) {
+      const updatedPizzas = pizzaList.map((p) => 
+        p.id === upizzaObj.id ? upizzaObj : p
+      )
+      setSelectedPizza(upizzaObj)
+      setPizzaList(updatedPizzas)
+    }
+
 
 
   return (
     <>
       <Header />
-      <PizzaForm handleAddPizza={handleAddPizza}/>
-      <PizzaList pizzaList={pizzaList} />
+      <PizzaForm handleChangeForm={handleChangeForm} handleEditPizza={handleEditPizza} selectedPizza={selectedPizza}/>
+      <PizzaList pizzaList={pizzaList} onSelectPizza={setSelectedPizza}/>
     </>
   );
 }

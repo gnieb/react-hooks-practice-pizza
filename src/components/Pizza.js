@@ -1,9 +1,11 @@
 import React from "react";
 
-function Pizza({id, topping, size, vegetarian }) {
+function Pizza({pizza, onSelectPizza }) {
 
-function handleEditButton (e) {
-  console.log(e)
+  const {topping, size, vegetarian} = pizza
+
+function handleEditButton () {
+  onSelectPizza(pizza)
 }
 
   return (

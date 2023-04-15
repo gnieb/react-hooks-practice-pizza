@@ -1,41 +1,35 @@
 import React, {useState} from "react";
 
-function PizzaForm({handleAddPizza}) {
-const [newTopping, setNewTopping] = useState('');
-const [newSize, setNewSize] = useState('Small');
-const [newVegetarian, setNewVegetarian] = useState('');
+function PizzaForm({handleEditPizza, selectedPizza, handleChangeForm}) {
+// const [newTopping, setNewTopping] = useState(selectedPizza.topping);
+// const [newSize, setNewSize] = useState(selectedPizza.size);
+// const [newVegetarian, setNewVegetarian] = useState(selectedPizza.vegetarian);
 
+const { topping, size, vegetarian } = selectedPizza;
 
-function handleNewTopping (e) {
-  setNewTopping(e.target.value)
+function handleToppingChange (e) {
+  handleChangeForm(e.target.name, e.target.value)
 }
 
 function handleNewSize (e) {
-  setNewSize (e.target.value)
+  handleChangeForm(e.target.name, e.target.value)
 }
 
 function handleNewVegetarian (e) {
-  setNewVegetarian(e.target.value)
+  handleChangeForm(e.target.name, e.target.value === "Vegetarian")
 }
 
 function handleFormSubmit (e) {
   e.preventDefault();
-  const newPizza = {
-    topping: newTopping,
-    size: newSize,
-    vegetarian: ((newVegetarian === "Vegetarian") ? "yes" : "no")
-  }
-  fetch("http://localhost:3001/pizzas", {
-    method: "POST",
+  fetch(`http://localhost:3002/pizzas/${selectedPizza.id}`, {
+    method: "PATCH",
     headers: {"Content-Type" : "application/json"}, 
-    body: JSON.stringify(newPizza)
+    body: JSON.stringify(selectedPizza)
   })
   .then(r => r.json())
-  .then(za => handleAddPizza(za))
+  .then(za => handleEditPizza(za))
   
-  setNewTopping('');
-  setNewSize('');
-  setNewVegetarian('');
+  
 }
 
 
@@ -46,7 +40,8 @@ function handleFormSubmit (e) {
       <div className="form-row">
         <div className="col-5">
           <input
-          onChange={handleNewTopping}
+            value={topping}
+            onChange={handleToppingChange}
             className="form-control"
             type="text"
             name="topping"
@@ -54,7 +49,7 @@ function handleFormSubmit (e) {
           />
         </div>
         <div className="col">
-          <select onChange={handleNewSize} className="form-control" name="size">
+          <select onChange={handleNewSize} value = {size} className="form-control" name="size">
             <option value="Small">Small</option>
             <option value="Medium">Medium</option>
             <option value="Large">Large</option>
@@ -66,8 +61,8 @@ function handleFormSubmit (e) {
               className="form-check-input"
               type="radio"
               name="vegetarian"
-              value="Vegetarian"
-              checked = {newVegetarian === "Vegetarian"}
+            
+              checked = {vegetarian}
               onChange={handleNewVegetarian}
             />
             <label className="form-check-label">Vegetarian</label>
@@ -77,8 +72,8 @@ function handleFormSubmit (e) {
               className="form-check-input"
               type="radio"
               name="vegetarian"
-              value="Not Vegetarian"
-              checked = {newVegetarian==="Not Vegetarian"}
+              value="Vegetarian"
+              checked = {!vegetarian}
               onChange={handleNewVegetarian}
             />
             <label className="form-check-label">Not Vegetarian</label>
